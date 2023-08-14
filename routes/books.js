@@ -23,6 +23,21 @@ router.get('/:id', (req, res) => {
   });
 });
 
+router.post('/', (req, res) => {
+  const { Titel, Erscheinungsjahr, Autor } = req.body;
+
+  if (!Titel || !Erscheinungsjahr || !Autor) {
+    return res.status(400).json({ message: 'Titel, Erscheinungsjahr und Autor sind erforderlich' });
+  }
+
+  const newBook = { Titel, Erscheinungsjahr, Autor };
+
+  connection.query('INSERT INTO Books SET ?', newBook, (err, result) => {
+    if (err) throw err;
+    res.status(201).json({ message: 'Buch erfolgreich erstellt', id: result.insertId });
+  });
+});
+
 
 
 export default router;
