@@ -38,6 +38,22 @@ router.post('/', (req, res) => {
   });
 });
 
+router.put('/:id', (req, res) => {
+  const bookId = req.params.id;
+  const { Titel, Erscheinungsjahr, Autor } = req.body;
+
+  if (!Titel || !Erscheinungsjahr || !Autor) {
+    return res.status(400).json({ message: "Titel, Erscheinungsjahr und Autor sind erforderlich" });
+  }
+
+  const query = `UPDATE Books SET Titel = ?, Erscheinungsjahr = ?, Autor = ? WHERE Id = ?`;
+
+  connection.query(query, [Titel, Erscheinungsjahr, Autor, bookId], (err, results) => {
+    if (err) throw err;
+    res.json({ message: "Buch erfolgreich aktualisiert" });
+  });
+});
+
 
 
 export default router;
