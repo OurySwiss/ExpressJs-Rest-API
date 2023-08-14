@@ -13,3 +13,20 @@ You will be creating a CRUD app, where you will be creating, updating and deleti
 
 ## Help 
 Check for internet ressources, courses you already did (FreeCodeCamp) or you can ask your PA.
+### JWT ressources
+- [JWT.io website](https://jwt.io/)
+- [What Is JWT and Why Should You Use JWT](https://youtu.be/7Q17ubqLfaM)
+- [JWT Authentication Tutorial - Node.js](https://youtu.be/mbsmsi7l3r4)
+## Checklist CRUD App
+### Books
+- [ ] GET works on **/books** and **/books/[:id]**
+- [ ] POST works on **/books**
+- [ ] PUT works on **/books/[:id]**
+- [ ] DELETE works on **/books/[:id]**
+
+### Users
+- [ ] GET works on **/users** and **/user/[:id]**
+- [ ] POST on **/users**
+- [ ] PUT on **/user/[:id]**
+- [ ] DELETE on **/user/[:id]**
+
