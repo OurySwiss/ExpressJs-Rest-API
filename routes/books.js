@@ -48,7 +48,7 @@ router.put('/:id', (req, res) => {
 
   const query = `UPDATE Books SET Titel = ?, Erscheinungsjahr = ?, Autor = ? WHERE Id = ?`;
 
-  connection.query(query, [Titel, Erscheinungsjahr, Autor, bookId], (err, results) => {
+  connection.query(query, [Titel, Erscheinungsjahr, Autor, bookId], (err) => {
     if (err) throw err;
     res.json({ message: "Buch erfolgreich aktualisiert" });
   });
