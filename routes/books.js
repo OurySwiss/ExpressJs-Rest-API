@@ -18,7 +18,7 @@ router.get('/:id', (req, res) => {
     if (results.length > 0) {
       res.json(results[0]);
     } else {
-      res.status(404).send('Buch nicht gefunden');
+      res.status(404).send('Book not found');
     }
   });
 });
@@ -27,14 +27,14 @@ router.post('/', (req, res) => {
   const { Titel, Erscheinungsjahr, Autor } = req.body;
 
   if (!Titel || !Erscheinungsjahr || !Autor) {
-    return res.status(400).send('Titel, Erscheinungsjahr und Autor sind erforderlich');
+    return res.status(400).send('Title, year of publication and author are required');
   }
 
   const newBook = { Titel, Erscheinungsjahr, Autor };
 
   connection.query('INSERT INTO Books SET ?', newBook, (err) => {
     if (err) throw err;
-    res.status(201).send('Buch erfolgreich erstellt');
+    res.status(201).send('Book successfully created');
   });
 });
 
@@ -43,7 +43,7 @@ router.put('/:id', (req, res) => {
   const { Titel, Erscheinungsjahr, Autor } = req.body;
 
   if (!Titel || !Erscheinungsjahr || !Autor) {
-    return res.status(400).send("Titel, Erscheinungsjahr und Autor sind erforderlich");
+    return res.status(400).send("Title, year of publication and author are required");
   }
 
   connection.query('SELECT * FROM Books WHERE Id = ?', [bookId], (err, results) => {
@@ -54,10 +54,10 @@ router.put('/:id', (req, res) => {
 
       connection.query(query, [Titel, Erscheinungsjahr, Autor, bookId], (err) => {
         if (err) throw err;
-        res.send("Buch erfolgreich aktualisiert");
+        res.send("Book successfully updated");
       });
     } else {
-      res.status(404).send("Buch nicht gefunden");
+      res.status(404).send("Book not found");
     }
   });
 });
@@ -74,10 +74,10 @@ router.delete('/:id', (req, res) => {
 
       connection.query(query, [bookId], (err) => {
         if (err) throw err;
-        res.send("Buch erfolgreich gelöscht");
+        res.send("Book successfully deleted");
       });
     } else {
-      res.status(404).send("Buch nicht gefunden"); 
+      res.status(404).send("Book not found"); 
     }
   });
 });
