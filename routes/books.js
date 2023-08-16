@@ -18,7 +18,7 @@ router.get('/:id', (req, res) => {
     if (results.length > 0) {
       res.json(results[0]);
     } else {
-      res.status(404).json({ message: 'Buch nicht gefunden' });
+      res.status(404).send('Buch nicht gefunden');
     }
   });
 });
@@ -27,14 +27,14 @@ router.post('/', (req, res) => {
   const { Titel, Erscheinungsjahr, Autor } = req.body;
 
   if (!Titel || !Erscheinungsjahr || !Autor) {
-    return res.status(400).json({ message: 'Titel, Erscheinungsjahr und Autor sind erforderlich' });
+    return res.status(400).send('Titel, Erscheinungsjahr und Autor sind erforderlich');
   }
 
   const newBook = { Titel, Erscheinungsjahr, Autor };
 
   connection.query('INSERT INTO Books SET ?', newBook, (err, result) => {
     if (err) throw err;
-    res.status(201).json({ message: 'Buch erfolgreich erstellt', id: result.insertId });
+    res.status(201).send('Buch erfolgreich erstellt');
   });
 });
 
@@ -43,14 +43,14 @@ router.put('/:id', (req, res) => {
   const { Titel, Erscheinungsjahr, Autor } = req.body;
 
   if (!Titel || !Erscheinungsjahr || !Autor) {
-    return res.status(400).json({ message: "Titel, Erscheinungsjahr und Autor sind erforderlich" });
+    return res.status(400).send("Titel, Erscheinungsjahr und Autor sind erforderlich");
   }
 
   const query = `UPDATE Books SET Titel = ?, Erscheinungsjahr = ?, Autor = ? WHERE Id = ?`;
 
   connection.query(query, [Titel, Erscheinungsjahr, Autor, bookId], (err) => {
     if (err) throw err;
-    res.json({ message: "Buch erfolgreich aktualisiert" });
+    res.send("Buch erfolgreich aktualisiert");
   });
 });
 
@@ -61,7 +61,7 @@ router.delete('/:id', (req, res) => {
 
   connection.query(query, [bookId], (err) => {
     if (err) throw err;
-    res.json({ message: "Buch erfolgreich gelöscht" });
+    res.send("Buch erfolgreich gelöscht");
   });
 });
 
