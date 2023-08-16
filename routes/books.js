@@ -54,6 +54,17 @@ router.put('/:id', (req, res) => {
   });
 });
 
+router.delete('/:id', (req, res) => {
+  const bookId = req.params.id;
+
+  const query = `DELETE FROM Books WHERE Id = ?`;
+
+  connection.query(query, [bookId], (err) => {
+    if (err) throw err;
+    res.json({ message: "Buch erfolgreich gelöscht" });
+  });
+});
+
 
 
 export default router;
