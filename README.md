@@ -30,3 +30,22 @@ Check for internet ressources, courses you already did (FreeCodeCamp) or you can
 - [ ] PUT on **/user/[:id]**
 - [ ] DELETE on **/user/[:id]**
 
+### Book Attributes
+- ID (Should be an UUID)
+- Title
+- Release Year
+- Author as Foreign Key
+
+### Author Attributes
+- ID (UUID)
+- Full name
+- Birthdate
+
+### User Attributes
+- ID (UUID)
+- Username
+- Password
+- Name
+- Surname
+- Age
+- Gender 
