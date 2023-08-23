@@ -23,14 +23,19 @@ app.use(bodyParser.json());
 
 export const authenticate = (req, res, next) => {
   const token = req.header('Authorization');
+  console.log("Token received:", token);
   if (!token) return res.status(401).send('Unauthorized');
 
   jwt.verify(token, 'your-secret-key', (err, user) => {
-    if (err) return res.status(401).send('Authorization failed');
+    if (err) {
+      console.log("Token verification failed:", err);
+      return res.status(401).send('Authorization failed');
+    }
     req.user = user;
     next();
   });
 };
+
 
 app.post('/login', (req, res) => {
   const { username, password } = req.body;
