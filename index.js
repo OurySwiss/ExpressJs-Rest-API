@@ -3,7 +3,6 @@ import bodyParser from 'body-parser';
 import booksRoutes from './routes/books.js';
 import mysql from 'mysql2';
 import jwt from 'jsonwebtoken';
-import bcrypt from 'bcrypt';
 
 export const connection = mysql.createConnection({
   host: 'localhost',
@@ -17,6 +16,10 @@ connection.connect((err) => {
   console.log('Connected to the database!');
 });
 
+const app = express();
+const PORT = 5000;
+
+app.use(bodyParser.json());
 
 export const authenticate = (req, res, next) => {
   const token = req.header('Authorization');
@@ -29,11 +32,20 @@ export const authenticate = (req, res, next) => {
   });
 };
 
+app.post('/login', (req, res) => {
+  const { username, password } = req.body;
 
-const app = express();
-const PORT = 5000;
+  connection.query('SELECT * FROM User WHERE Username = ?', [username], (err, results) => {
+    if (err) throw err;
+    if (results.length > 0 && password === results[0].Password) {
+      const token = jwt.sign({ id: results[0].Id }, 'your-secret-key');
+      return res.send({ token });
+    }
 
-app.use(bodyParser.json());
-app.use('/books', booksRoutes);
+    res.status(401).send('Login failed');
+  });
+});
+
+app.use('/books', authenticate, booksRoutes);
 
 app.listen(PORT, () => console.log(`Server running on port: http://localhost:${PORT}`));
