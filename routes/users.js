@@ -44,25 +44,26 @@ router.put('/:id', (req, res) => {
   const userId = req.params.id;
   const { Username, Password, Name, Vorname, Alter, Geschlecht } = req.body;
 
-  if (!Username || !Password || !Name || !Vorname || !Alter || !Geschlecht) {
-    return res.status(400).send('All fields are required');
+  if (!Username || !Password || !Name || !Vorname || Alter == null || !Geschlecht) {
+    return res.status(400).send("All fields are required");
   }
 
   connection.query('SELECT * FROM User WHERE Id = ?', [userId], (err, results) => {
     if (err) throw err;
 
     if (results.length > 0) {
-      const query = `UPDATE User SET Username = ?, Password = ?, Name = ?, Vorname = ?, Alter = ?, Geschlecht = ? WHERE Id = ?`;
+      const query = `UPDATE User SET Username = ?, Password = ?, Name = ?, Vorname = ?, \`Alter\` = ?, Geschlecht = ? WHERE Id = ?`;
 
       connection.query(query, [Username, Password, Name, Vorname, Alter, Geschlecht, userId], (err) => {
         if (err) throw err;
-        res.send('User successfully updated');
+        res.send("User successfully updated");
       });
     } else {
-      res.status(404).send('User not found');
+      res.status(404).send("User not found");
     }
   });
 });
+
 
 
 router.delete('/:id', (req, res) => {
