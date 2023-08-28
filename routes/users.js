@@ -11,7 +11,7 @@ router.get('/', (req, res) => {
 });
 
 
-router.get('/user/:id', (req, res) => {
+router.get('/:id', (req, res) => {
   const userId = req.params.id;
   connection.query('SELECT * FROM User WHERE Id = ?', [userId], (err, results) => {
     if (err) throw err;
@@ -24,7 +24,7 @@ router.get('/user/:id', (req, res) => {
 });
 
 
-router.post('/users', (req, res) => {
+router.post('/', (req, res) => {
   const { Username, Password, Name, Vorname, Alter, Geschlecht } = req.body;
 
   if (!Username || !Password || !Name || !Vorname || !Alter || !Geschlecht) {
@@ -36,5 +36,30 @@ router.post('/users', (req, res) => {
   connection.query('INSERT INTO User SET ?', newUser, (err) => {
     if (err) throw err;
     res.status(201).send('User successfully created');
+  });
+});
+
+
+router.put('/:id', (req, res) => {
+  const userId = req.params.id;
+  const { Username, Password, Name, Vorname, Alter, Geschlecht } = req.body;
+
+  if (!Username || !Password || !Name || !Vorname || !Alter || !Geschlecht) {
+    return res.status(400).send('All fields are required');
+  }
+
+  connection.query('SELECT * FROM User WHERE Id = ?', [userId], (err, results) => {
+    if (err) throw err;
+
+    if (results.length > 0) {
+      const query = `UPDATE User SET Username = ?, Password = ?, Name = ?, Vorname = ?, Alter = ?, Geschlecht = ? WHERE Id = ?`;
+
+      connection.query(query, [Username, Password, Name, Vorname, Alter, Geschlecht, userId], (err) => {
+        if (err) throw err;
+        res.send('User successfully updated');
+      });
+    } else {
+      res.status(404).send('User not found');
+    }
   });
 });
