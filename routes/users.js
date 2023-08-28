@@ -63,3 +63,25 @@ router.put('/:id', (req, res) => {
     }
   });
 });
+
+
+router.delete('/:id', (req, res) => {
+  const userId = req.params.id;
+
+  connection.query('SELECT * FROM User WHERE Id = ?', [userId], (err, results) => {
+    if (err) throw err;
+
+    if (results.length > 0) {
+      const query = `DELETE FROM User WHERE Id = ?`;
+
+      connection.query(query, [userId], (err) => {
+        if (err) throw err;
+        res.send('User successfully deleted');
+      });
+    } else {
+      res.status(404).send('User not found');
+    }
+  });
+});
+
+export default router;
