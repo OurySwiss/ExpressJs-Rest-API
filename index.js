@@ -1,6 +1,7 @@
 import express from 'express';
 import bodyParser from 'body-parser';
 import booksRoutes from './routes/books.js';
+import usersRoutes from './routes/users.js';
 import mysql from 'mysql2';
 import jwt from 'jsonwebtoken';
 
@@ -52,5 +53,6 @@ app.post('/login', (req, res) => {
 });
 
 app.use('/books', authenticate, booksRoutes);
+app.use('/users', usersRoutes);
 
 app.listen(PORT, () => console.log(`Server running on port: http://localhost:${PORT}`));
