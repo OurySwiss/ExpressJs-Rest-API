@@ -22,3 +22,19 @@ router.get('/user/:id', (req, res) => {
     }
   });
 });
+
+
+router.post('/users', (req, res) => {
+  const { Username, Password, Name, Vorname, Alter, Geschlecht } = req.body;
+
+  if (!Username || !Password || !Name || !Vorname || !Alter || !Geschlecht) {
+    return res.status(400).send('All fields are required');
+  }
+
+  const newUser = { Username, Password, Name, Vorname, Alter, Geschlecht };
+
+  connection.query('INSERT INTO User SET ?', newUser, (err) => {
+    if (err) throw err;
+    res.status(201).send('User successfully created');
+  });
+});
