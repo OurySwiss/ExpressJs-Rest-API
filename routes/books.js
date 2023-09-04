@@ -69,34 +69,50 @@ router.put('/:id', (req, res) => {
   const bookId = req.params.id;
   const { Titel, Erscheinungsjahr, Autor } = req.body;
 
-  if (!Titel || !Erscheinungsjahr || !Autor) {
-    return res.status(400).send("Title, year of publication, and author are required");
-  }
-  connection.query('SELECT ID FROM Autor WHERE FullName = ?', [Autor], (err, results) => {
+  connection.query('SELECT * FROM Books WHERE Id = ?', [bookId], (err, results) => {
     if (err) throw err;
 
-    let AutorID;
     if (results.length > 0) {
-      AutorID = results[0].ID;
-    } else {
-      connection.query('INSERT INTO Autor (FullName) VALUES (?)', [Autor], (err, results) => {
+      const book = results[0];
+
+      connection.query('SELECT ID FROM Autor WHERE FullName = ?', [Autor], (err, results) => {
         if (err) throw err;
-        AutorID = results.insertId;
+
+        let AutorID;
+        if (results.length > 0) {
+          AutorID = results[0].ID;
+        } else {
+          connection.query('INSERT INTO Autor (FullName) VALUES (?)', [Autor], (err, results) => {
+            if (err) throw err;
+            AutorID = results.insertId;
+          });
+        }
+
+        const query = `
+          UPDATE Books 
+          SET 
+            Titel = ?, 
+            Erscheinungsjahr = ?, 
+            AutorID = ? 
+          WHERE Id = ?
+        `;
+
+        connection.query(query, [
+          Titel || book.Titel, 
+          Erscheinungsjahr || book.Erscheinungsjahr, 
+          AutorID || book.AutorID, 
+          bookId
+        ], (err) => {
+          if (err) throw err;
+          res.send("Book successfully updated");
+        });
       });
+    } else {
+      res.status(404).send("Book not found");
     }
-
-    const query = `
-      UPDATE Books 
-      SET Titel = ?, Erscheinungsjahr = ?, AutorID = ? 
-      WHERE Id = ?
-    `;
-
-    connection.query(query, [Titel, Erscheinungsjahr, AutorID, bookId], (err) => {
-      if (err) throw err;
-      res.send("Book successfully updated");
-    });
   });
 });
+
 
 
 
