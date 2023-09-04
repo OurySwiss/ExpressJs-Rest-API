@@ -4,6 +4,7 @@ import booksRoutes from './routes/books.js';
 import usersRoutes from './routes/users.js';
 import mysql from 'mysql2';
 import jwt from 'jsonwebtoken';
+import bcrypt from 'bcrypt';
 
 export const connection = mysql.createConnection({
   host: 'localhost',
@@ -22,12 +23,14 @@ const PORT = 5000;
 
 app.use(bodyParser.json());
 
+const SECRET_KEY = "your-secret-key";
+
 export const authenticate = (req, res, next) => {
   const token = req.header('Authorization');
   console.log("Token received:", token);
   if (!token) return res.status(401).send('Unauthorized');
 
-  jwt.verify(token, 'your-secret-key', (err, user) => {
+  jwt.verify(token, SECRET_KEY, (err, user) => {
     if (err) {
       console.log("Token verification failed:", err);
       return res.status(401).send('Authorization failed');
@@ -37,18 +40,24 @@ export const authenticate = (req, res, next) => {
   });
 };
 
-
 app.post('/login', (req, res) => {
   const { username, password } = req.body;
 
   connection.query('SELECT * FROM User WHERE Username = ?', [username], (err, results) => {
     if (err) throw err;
-    if (results.length > 0 && password === results[0].Password) {
-      const token = jwt.sign({ id: results[0].Id }, 'your-secret-key');
-      return res.send({ token });
+    if (results.length > 0) {
+      bcrypt.compare(password, results[0].Password, (err, isMatch) => {
+        if (err) throw err;
+        if (isMatch) {
+          const token = jwt.sign({ id: results[0].Id }, SECRET_KEY);
+          return res.send({ token });
+        } else {
+          res.status(401).send('Login failed');
+        }
+      });
+    } else {
+      res.status(401).send('Login failed');
     }
-
-    res.status(401).send('Login failed');
   });
 });
 
