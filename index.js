@@ -5,12 +5,15 @@ import usersRoutes from './routes/users.js';
 import mysql from 'mysql2';
 import jwt from 'jsonwebtoken';
 import bcrypt from 'bcrypt';
+import dotenv from 'dotenv';
 
-export const connection = mysql.createConnection({
-  host: 'localhost',
-  user: 'root',
-  password: '1234',
-  database: 'Library'
+dotenv.config();
+
+const connection = mysql.createConnection({
+  host: process.env.DB_HOST,
+  user: process.env.DB_USER,
+  password: process.env.DB_PASSWORD,
+  database: process.env.DB_DATABASE
 });
 
 connection.connect((err) => {
@@ -65,3 +68,5 @@ app.use('/books', authenticate, booksRoutes);
 app.use('/users', usersRoutes);
 
 app.listen(PORT, () => console.log(`Server running on port: http://localhost:${PORT}`));
+
+export {connection};
