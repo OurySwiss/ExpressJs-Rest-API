@@ -57,21 +57,36 @@ router.put('/:id', (req, res) => {
   const bookId = req.params.id;
   const { Titel, Erscheinungsjahr, AutorID } = req.body;
 
-  if (!Titel || !Erscheinungsjahr || !AutorID) {
-    return res.status(400).send("Title, year of publication, and author ID are required");
-  }
-
-  const query = `
-    UPDATE Books 
-    SET Titel = ?, Erscheinungsjahr = ?, AutorID = ? 
-    WHERE Id = ?
-  `;
-
-  connection.query(query, [Titel, Erscheinungsjahr, AutorID, bookId], (err) => {
+  connection.query('SELECT * FROM Books WHERE Id = ?', [bookId], (err, results) => {
     if (err) throw err;
-    res.send("Book successfully updated");
+
+    if (results.length > 0) {
+      const book = results[0];
+      
+      const query = `
+        UPDATE Books 
+        SET 
+          Titel = ?, 
+          Erscheinungsjahr = ?, 
+          AutorID = ? 
+        WHERE Id = ?
+      `;
+
+      connection.query(query, [
+        Titel !== undefined ? Titel : book.Titel, 
+        Erscheinungsjahr !== undefined ? Erscheinungsjahr : book.Erscheinungsjahr, 
+        AutorID !== undefined ? AutorID : book.AutorID, 
+        bookId
+      ], (err) => {
+        if (err) throw err;
+        res.send("Book successfully updated");
+      });
+    } else {
+      res.status(404).send("Book not found");
+    }
   });
 });
+
 
 
 
