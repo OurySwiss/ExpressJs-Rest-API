@@ -64,7 +64,7 @@ router.put('/:id', verifyUser, async (req, res) => {
   const userId = req.params.id;
   const { Username, Password, Name, Vorname, Alter, Geschlecht } = req.body;
 
-  if (userId != req.user.id) {
+  if (userId !== req.user.id) {
     return res.status(403).send('Access Denied');
   }
 
@@ -111,7 +111,7 @@ router.put('/:id', verifyUser, async (req, res) => {
 router.delete('/:id', verifyUser, (req, res) => {
   const userId = req.params.id;
 
-  if (userId != req.user.id) {
+  if (userId !== req.user.id) {
     return res.status(403).send('Access Denied');
   }
 
