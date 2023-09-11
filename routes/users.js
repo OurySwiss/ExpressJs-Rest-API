@@ -72,11 +72,6 @@ router.put('/:id', verifyUser, async (req, res) => {
   if (Password) {
     hashedPassword = await bcrypt.hash(Password, 10);
   }
-
-  connection.query('SELECT * FROM User WHERE Id = ?', [userId], async (err, results) => {
-    if (err) throw err;
-
-    if (results.length > 0) {
       const user = results[0];
 
       const query = `
@@ -102,11 +97,7 @@ router.put('/:id', verifyUser, async (req, res) => {
         if (err) throw err;
         res.send("User successfully updated");
       });
-    } else {
-      res.status(404).send("User not found");
-    }
   });
-});
 
 router.delete('/:id', verifyUser, (req, res) => {
   const userId = req.params.id;
