@@ -72,7 +72,6 @@ router.put('/:id', verifyUser, async (req, res) => {
   if (Password) {
     hashedPassword = await bcrypt.hash(Password, 10);
   }
-      const user = results[0];
 
       const query = `
         UPDATE User 

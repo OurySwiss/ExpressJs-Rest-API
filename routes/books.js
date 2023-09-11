@@ -56,8 +56,6 @@ router.post('/', (req, res) => {
 router.put('/:id', (req, res) => {
   const bookId = req.params.id;
   const { Titel, Erscheinungsjahr, AutorID } = req.body;
-
-      const book = results[0];
       
       const query = `
         UPDATE Books 
