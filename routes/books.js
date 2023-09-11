@@ -57,10 +57,6 @@ router.put('/:id', (req, res) => {
   const bookId = req.params.id;
   const { Titel, Erscheinungsjahr, AutorID } = req.body;
 
-  connection.query('SELECT * FROM Books WHERE Id = ?', [bookId], (err, results) => {
-    if (err) throw err;
-
-    if (results.length > 0) {
       const book = results[0];
       
       const query = `
@@ -81,10 +77,6 @@ router.put('/:id', (req, res) => {
         if (err) throw err;
         res.send("Book successfully updated");
       });
-    } else {
-      res.status(404).send("Book not found");
-    }
-  });
 });
 
 
@@ -94,20 +86,12 @@ router.put('/:id', (req, res) => {
 router.delete('/:id', (req, res) => {
   const bookId = req.params.id;
 
-  connection.query('SELECT * FROM Books WHERE Id = ?', [bookId], (err, results) => {
-    if (err) throw err;
-
-    if (results.length > 0) {
-      const query = `DELETE FROM Books WHERE Id = ?`;
+    const query = `DELETE FROM Books WHERE Id = ?`;
 
       connection.query(query, [bookId], (err) => {
         if (err) throw err;
         res.send("Book successfully deleted");
       });
-    } else {
-      res.status(404).send("Book not found"); 
-    }
-  });
 });
 
 
