@@ -59,7 +59,7 @@ app.post('/login', (req, res) => {
         }
       });
     } else {
-      res.status(404).send('Login failed');
+      res.status(404).send('User not found');
     }
   });
 });
